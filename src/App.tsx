@@ -1,68 +1,27 @@
-import { FormEvent, useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import {
-    useGetAlbumsQuery,
-    useCreateAlbumMutation,
-    useUpdateAlbumMutation,
-} from "./slices/example";
+import NotFound from "./components/NotFound";
+import Login from "./screens/Login";
+import Overview from "./screens/Overview";
+import Tour from "./screens/Tour";
+import AuthLayout from "./layout/AuthLayout";
+import Layout from "./layout/Layout";
 
 function App() {
-    const [page, setPage] = useState(1);
-    const [title, setTitle] = useState("");
-    const {
-        data: albums = [],
-        isError,
-        isLoading,
-        isFetching,
-        error,
-    } = useGetAlbumsQuery(page);
-    const [createAlbum] = useCreateAlbumMutation();
-    const [updateAlbum] = useUpdateAlbumMutation();
-
-    if (isLoading || isFetching) {
-        return <div>loading...</div>;
-    }
-
-    if (isError) {
-        console.log({ error });
-        return <div>hello</div>;
-    }
-
-    function submitAlbum(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        createAlbum(title);
-        updateAlbum({ id: 21, title: "hello" });
-    }
-
     return (
-        <>
-            <button onClick={() => setPage((prev) => prev - 1)}>Prev</button>
-            <button onClick={() => setPage((prev) => prev + 1)}>Next</button>
-            {isLoading ? "loading..." : albums.length}
-            <form onSubmit={(e) => submitAlbum(e)}>
-                <h3>New Album</h3>
-                <div>
-                    <label htmlFor="title">Title:</label>{" "}
-                    <input
-                        name="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        type="text"
-                        id="title"
-                    />
-                </div>
-
-                <br />
-
-                <div>
-                    <input
-                        type="submit"
-                        value="Add New Album"
-                        disabled={isLoading}
-                    />
-                </div>
-            </form>
-        </>
+        <Routes>
+			{/* Protected Route */}
+			<Route path='/' element={<Layout />}>
+				<Route path="/" element={<Overview />} />
+				<Route path="/tour" element={<Tour/>}/>
+			</Route>
+			{/* Public Route */}
+			<Route path="/" element={<AuthLayout />}>
+				<Route path="/signin" element={<Login />} />
+				{/* <Route path="/signup" element={<SignUp />} /> */}
+			</Route>
+			<Route path='*' element={<NotFound />}/>
+		</Routes>
     );
 }
 

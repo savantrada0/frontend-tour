@@ -1,44 +1,63 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
-const Header = ({ user }: { user: { photo: string; name: string } }) => {
+interface userType {
+    photo: string; 
+    name: string;
+}
+
+type HeaderProps = {
+    user?: userType
+}
+
+const Header = ({ user }: HeaderProps) => {
     return (
         <header className="header">
             <nav className="nav nav--tours">
-                <a href="/" className="nav__el">
+                <Link to="/overview" className="nav__el">
                     All tours
-                </a>
+                </Link>
+          <button className="nav__search-btn">
+            <svg>
+              <use xlinkHref="img/icons.svg#icon-search"></use>
+            </svg>
+          </button>
+          <input
+            type="text"
+            placeholder="Search tours"
+            className="nav__search-input"
+            />
+        
+
             </nav>
             <div className="header__logo">
-                <img src="/img/logo-white.png" alt="Natours logo" />
+                <img src="../assets/img/logo-white.png" alt="Natours logo" />
             </div>
             <nav className="nav nav--user">
                 {user ? (
                     <>
-                        <a href="" className="nav__el nav__el--logout">
+                    <Link to="/" className="nav__el">My bookings</Link>
+                        <Link to="/" className="nav__el nav__el--logout">
                             Log out
-                        </a>
-                        <a href="/me" className="nav__el nav__el--logout">
+                        </Link>                    <Link to="/me" className="nav__el nav__el--logout">
                             <img
                                 src={`/img/users/${user.photo}`}
                                 alt={`Photo of ${user.name}`}
                                 className="nav__user-img"
                             />
                             <span>{user.name.split(" ")[0]}</span>
-                        </a>
-                    </>
+                        </Link>                 </>
                 ) : (
                     <>
-                        <a href="" className="nav__el">
+                        <Link to="" className="nav__el">
                             Log in
-                        </a>
-                        <a href="/#" className="nav__el nav__el--cta">
+                        </Link>                     <Link to="/#" className="nav__el nav__el--cta">
                             Sign up
-                        </a>
-                    </>
+                        </Link>                </>
                 )}
             </nav>
         </header>
     );
 };
 
+       
 export default Header;
